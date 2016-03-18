@@ -6,11 +6,9 @@
 
 QT       += widgets
 
-TARGET = SwiftQtCWrapper
+TARGET = CSwiftQt
 TEMPLATE = lib
 CONFIG += c++11
-
-DEFINES += SWIFTQTCWRAPPER_LIBRARY
 
 SOURCES += \
     wrapper.cpp
