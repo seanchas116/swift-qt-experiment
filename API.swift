@@ -72,7 +72,7 @@ public class QWidget: QObject {
   }
 }
 
-public class QLabel: QObject {
+public class QLabel: QWidget {
   public init(text: String) {
     let qtext = QString(text)
     super.init(ptr: QLabel_new(qtext.ptr))
