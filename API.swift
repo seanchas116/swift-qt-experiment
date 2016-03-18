@@ -1,4 +1,5 @@
 import CSwiftQt
+import Foundation
 
 class CString {
     let len: Int
@@ -30,11 +31,11 @@ class CStringArray {
 }
 
 class QString {
-  private let ptr: COpaquePointer
+  let ptr: UnsafeMutablePointer<Void>
 
   init(_ string: String) {
     let utf16s = [UInt16](string.utf16)
-    ptr = QString_new(utf16s.count, utf16)
+    ptr = QString_new(Int32(utf16s.count), UnsafeMutablePointer(utf16s))
   }
 
   deinit {
@@ -43,9 +44,9 @@ class QString {
 }
 
 public class QObject {
-  private let ptr: COpaquePointer
+  let ptr: UnsafeMutablePointer<Void>
 
-  init(ptr: COpaquePointer) {
+  init(ptr: UnsafeMutablePointer<Void>) {
     self.ptr = ptr
   }
 
@@ -57,11 +58,11 @@ public class QObject {
 public class QApplication: QObject {
   public init(args: [String]) {
     let array = CStringArray(args)
-    super.init(ptr: QApplication_new(array.len, array.buffer))
+    super.init(ptr: QApplication_new(Int32(array.len), UnsafeMutablePointer(array.pointers)))
   }
 
   public func exec() -> Int {
-    return QApplication_exec(ptr)
+    return Int(QApplication_exec(ptr))
   }
 }
 
@@ -74,6 +75,6 @@ public class QWidget: QObject {
 public class QLabel: QObject {
   public init(text: String) {
     let qtext = QString(text)
-    super.init(ptr: QLabel_new(qtext))
+    super.init(ptr: QLabel_new(qtext.ptr))
   }
 }

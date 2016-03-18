@@ -1,9 +1,11 @@
 #pragma once
 
-#include <cstdint>
 
 #ifdef __cplusplus
+#include <cstdint>
 extern "C" {
+#else
+#include <stdint.h>
 #endif
 
 void QObject_delete(void *self);

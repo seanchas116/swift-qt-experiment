@@ -1,0 +1,4 @@
+module CSwiftQt [system] {
+    header "wrapper.h"
+    export *
+}
