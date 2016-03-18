@@ -1,15 +1,16 @@
-SWIFTC = xcrun -sdk macosx swiftc
+SWIFTC = swiftc
 MODULE_NAME = SwiftQt
 SRC = API.swift
-OPTS = -I ./CSwiftQt
 OUTFILES = $(MODULE_NAME).o $(MODULE_NAME).swiftmodule
+SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
+SWIFTCFLAGS = -sdk $(SDKPATH) -I ./CSwiftQt
 
 all: $(OUTFILES)
 
 $(MODULE_NAME).o: $(SRC)
-	$(SWIFTC) $(OPTS) -emit-object -module-name $(MODULE_NAME) -parse-as-library $(SRC)
+	$(SWIFTC) $(SWIFTCFLAGS) -emit-object -module-name $(MODULE_NAME) -parse-as-library $(SRC)
 $(MODULE_NAME).swiftmodule: $(SRC)
-	$(SWIFTC) $(OPTS) -emit-module -module-name $(MODULE_NAME) -parse-as-library $(SRC)
+	$(SWIFTC) $(SWIFTCFLAGS) -emit-module -module-name $(MODULE_NAME) -parse-as-library $(SRC)
 
 .PHONY: clean
 

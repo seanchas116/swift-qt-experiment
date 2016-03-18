@@ -1,5 +1,5 @@
 import CSwiftQt
-import Foundation
+import Darwin
 
 class CString {
     let len: Int
