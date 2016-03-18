@@ -6,18 +6,17 @@
 extern "C" {
 #endif
 
-struct StringReference {
-    uint16_t *data;
-    size_t size;
-};
-
 void QObject_delete(void *self);
 
 void *QApplication_new(int argc, char **argv);
-
-void *QLabel_new(StringReference text);
+int QApplication_exec(void *app);
 
 void QWidget_show(void *widget);
+
+void *QLabel_new(void *text);
+
+void *QString_new(int len, uint16_t *buf);
+void QString_delete(void *str);
 
 #ifdef __cplusplus
 }
