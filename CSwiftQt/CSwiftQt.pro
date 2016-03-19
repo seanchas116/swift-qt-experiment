@@ -9,7 +9,7 @@ QT       += widgets
 TARGET = CSwiftQt
 TEMPLATE = lib
 CONFIG += c++11
-QMAKE_SONAME_PREFIX = $${PWD}
+QMAKE_SONAME_PREFIX = @rpath
 
 SOURCES += \
     wrapper.cpp

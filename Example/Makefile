@@ -4,7 +4,7 @@ SRC = Example.swift
 SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
 SWIFTCFLAGS = -sdk $(SDKPATH) -I ../
 SWIFT_LIBS_PATH = /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib/swift/macosx
-LDFLAGS = -L$(SWIFT_LIBS_PATH) -Wl,-rpath,$(SWIFT_LIBS_PATH) -L../CSwiftQt -lCSwiftQt
+LDFLAGS = -L$(SWIFT_LIBS_PATH) -Wl,-rpath,$(SWIFT_LIBS_PATH) -L../CSwiftQt -lCSwiftQt -Wl,-rpath,$(PWD)/../CSwiftQt
 OUTFILES = Example Example.o
 
 Example: Example.o
