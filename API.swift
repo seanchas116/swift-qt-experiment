@@ -1,35 +1,6 @@
 import CSwiftQt
 import Darwin
 
-class CString {
-    let len: Int
-    let buffer: UnsafeMutablePointer<Int8>
-
-    init(_ string: String) {
-        (len, buffer) = string.withCString {
-            let len = Int(strlen($0) + 1)
-            let dst = strcpy(UnsafeMutablePointer<Int8>.alloc(len), $0)
-            return (len, dst)
-        }
-    }
-
-    deinit {
-        buffer.dealloc(len)
-    }
-}
-
-class CStringArray {
-    private let _strings: [CString]
-    let len: Int
-    let pointers: [UnsafeMutablePointer<Int8>]
-
-    init(_ strings: [String]) {
-        _strings = strings.map { CString($0) }
-        len = _strings.count
-        pointers = _strings.map { $0.buffer }
-    }
-}
-
 class QString {
   let ptr: UnsafeMutablePointer<Void>
 
@@ -58,7 +29,7 @@ public class QObject {
 public class QApplication: QObject {
   public init(args: [String]) {
     let array = CStringArray(args)
-    super.init(ptr: QApplication_new(Int32(array.len), UnsafeMutablePointer(array.pointers)))
+    super.init(ptr: QApplication_new(Int32(array.length), UnsafeMutablePointer(array.pointers)))
   }
 
   public func exec() -> Int {

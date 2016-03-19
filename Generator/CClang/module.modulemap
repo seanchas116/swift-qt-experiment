@@ -1,0 +1,4 @@
+module CClang [system] {
+    header "CClang.h"
+    export *
+}

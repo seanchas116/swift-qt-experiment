@@ -1,6 +1,6 @@
 SWIFTC = swiftc
 MODULE_NAME = SwiftQt
-SRC = API.swift
+SRC = API.swift CUtil.swift
 OUTFILES = $(MODULE_NAME).o $(MODULE_NAME).swiftmodule
 SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
 SWIFTCFLAGS = -sdk $(SDKPATH) -I ./CSwiftQt

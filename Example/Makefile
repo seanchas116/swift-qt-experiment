@@ -8,7 +8,7 @@ LDFLAGS = -L$(SWIFT_LIBS_PATH) -Wl,-rpath,$(SWIFT_LIBS_PATH) -L../CSwiftQt -lCSw
 OUTFILES = Example Example.o
 
 Example: Example.o
-	$(CXX) $(LDFLAGS) Example.o ../API.o -o Example
+	$(CXX) $(LDFLAGS) Example.o ../API.o ../CUtil.o -o Example
 
 Example.o: $(SRC)
 	$(SWIFTC) $(SWIFTCFLAGS) -emit-object $(OPTS) $(SRC)
