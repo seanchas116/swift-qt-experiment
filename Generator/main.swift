@@ -1,10 +1,24 @@
 import CClang
 
+func visitMethods(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
+  let kind = clang_getCursorKind(cursor)
+  if kind == CXCursor_CXXMethod {
+    let name = clang_getCursorSpelling(cursor)
+    let type = clang_getCursorType(cursor)
+    let typeName = clang_getTypeSpelling(type)
+    print("METHOD: " + (String.fromCString(clang_getCString(name)) ?? ""))
+    print("TYPE: " + (String.fromCString(clang_getCString(typeName)) ?? ""))
+  }
+  return CXChildVisit_Recurse
+}
+
 func visitClasses(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
   let kind = clang_getCursorKind(cursor)
   if kind == CXCursor_ClassDecl {
     let name = clang_getCursorSpelling(cursor)
-    print(String.fromCString(clang_getCString(name)) ?? "")
+    print("CLASS: " + (String.fromCString(clang_getCString(name)) ?? ""))
+    clang_visitChildren(cursor, visitMethods, nil)
+    return CXChildVisit_Continue
   }
   return CXChildVisit_Recurse
 }
