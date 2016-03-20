@@ -1,5 +1,5 @@
 SWIFTC = swiftc
-SRC = main.swift ../CUtil.swift
+SRC = CXUtil.swift main.swift ../CUtil.swift
 SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
 CLANG_INCLUDE = /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/local/include
 CLANG_LIBS = /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib
