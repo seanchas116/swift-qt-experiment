@@ -1,22 +1,59 @@
 import CClang
 
+class ClangString: CustomStringConvertible {
+  let data: CXString
+  init(_ data: CXString) {
+    self.data = data
+  }
+
+  var description: String {
+    return String.fromCString(clang_getCString(data)) ?? ""
+  }
+
+  deinit {
+    clang_disposeString(data)
+  }
+}
+
+extension CXType: CustomStringConvertible {
+  public var description: String {
+    return ClangString(clang_getTypeSpelling(self)).description
+  }
+}
+
+extension CXCursor: CustomStringConvertible {
+  var type: CXType {
+    return clang_getCursorType(self)
+  }
+
+  var kind: CXCursorKind {
+    return clang_getCursorKind(self)
+  }
+
+  public var description: String {
+    return ClangString(clang_getCursorSpelling(self)).description
+  }
+}
+
+extension CXCursorKind: CustomStringConvertible {
+  public var description: String {
+    return ClangString(clang_getCursorKindSpelling(self)).description
+  }
+}
+
 func visitMethods(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
-  let kind = clang_getCursorKind(cursor)
+  let kind = cursor.kind
   if kind == CXCursor_CXXMethod {
-    let name = clang_getCursorSpelling(cursor)
-    let type = clang_getCursorType(cursor)
-    let typeName = clang_getTypeSpelling(type)
-    print("METHOD: " + (String.fromCString(clang_getCString(name)) ?? ""))
-    print("TYPE: " + (String.fromCString(clang_getCString(typeName)) ?? ""))
+    print("METHOD: \(cursor)")
+    print("TYPE: \(cursor.type)")
   }
   return CXChildVisit_Recurse
 }
 
 func visitClasses(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
-  let kind = clang_getCursorKind(cursor)
+  let kind = cursor.kind
   if kind == CXCursor_ClassDecl {
-    let name = clang_getCursorSpelling(cursor)
-    print("CLASS: " + (String.fromCString(clang_getCString(name)) ?? ""))
+    print("CLASS: \(kind)")
     clang_visitChildren(cursor, visitMethods, nil)
     return CXChildVisit_Continue
   }
@@ -24,9 +61,7 @@ func visitClasses(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) 
 }
 
 func visitDump(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
-  let kindStr = clang_getCursorKindSpelling(clang_getCursorKind(cursor))
-  print(String.fromCString(clang_getCString(kindStr)) ?? "")
-  clang_disposeString(kindStr)
+  print(cursor.kind)
   return CXChildVisit_Recurse
 }
 
