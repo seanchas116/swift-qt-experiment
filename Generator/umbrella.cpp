@@ -1,4 +1,6 @@
 
-int test() {
-  return 0;
-}
+class Test {
+  int test() {
+    return 0;
+  }
+};

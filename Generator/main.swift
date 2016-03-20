@@ -1,8 +1,11 @@
 import CClang
 
-func visit(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
-  let name = clang_getCursorSpelling(cursor)
-  print(String.fromCString(clang_getCString(name)) ?? "")
+func visitClasses(cursor: CXCursor, parent: CXCursor, clientData: CXClientData) -> CXChildVisitResult {
+  let kind = clang_getCursorKind(cursor)
+  if kind == CXCursor_ClassDecl {
+    let name = clang_getCursorSpelling(cursor)
+    print(String.fromCString(clang_getCString(name)) ?? "")
+  }
   return CXChildVisit_Recurse
 }
 
@@ -16,7 +19,7 @@ let translationUnit = clang_createTranslationUnitFromSourceFile(
   0, nil
 )
 let rootCursor = clang_getTranslationUnitCursor(translationUnit)
-clang_visitChildren(rootCursor, visit, nil)
+clang_visitChildren(rootCursor, visitClasses, nil)
 
 clang_disposeTranslationUnit(translationUnit)
 clang_disposeIndex(index)
