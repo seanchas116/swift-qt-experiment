@@ -1,14 +1,16 @@
 SWIFTC = swiftc
 MODULE_NAME = SwiftQt
 SRC = API.swift CUtil.swift
-OUTFILES = $(MODULE_NAME).o $(MODULE_NAME).swiftmodule
+OUTFILES = lib$(MODULE_NAME).dylib $(MODULE_NAME).swiftmodule
 SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
-SWIFTCFLAGS = -sdk $(SDKPATH) -I ./CSwiftQt
+SWIFTCFLAGS = -sdk $(SDKPATH) -I ./CSwiftQt\
+	-Xlinker -L./CSwiftQt -Xlinker -lCSwiftQt -Xlinker -rpath -Xlinker $(PWD)/CSwiftQt\
+	-Xlinker -install_name -Xlinker @rpath/lib$(MODULE_NAME).dylib
 
 all: $(OUTFILES)
 
-$(MODULE_NAME).o: $(SRC)
-	$(SWIFTC) $(SWIFTCFLAGS) -emit-object -module-name $(MODULE_NAME) -parse-as-library $(SRC)
+lib$(MODULE_NAME).dylib: $(SRC)
+	$(SWIFTC) $(SWIFTCFLAGS) -emit-library -module-name $(MODULE_NAME) -parse-as-library $(SRC)
 $(MODULE_NAME).swiftmodule: $(SRC)
 	$(SWIFTC) $(SWIFTCFLAGS) -emit-module -module-name $(MODULE_NAME) -parse-as-library $(SRC)
 
