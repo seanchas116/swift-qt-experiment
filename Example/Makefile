@@ -1,19 +1,14 @@
 SWIFTC = swiftc
-CXX = clang++
 SRC = Example.swift
 SDKPATH = $(shell xcrun -sdk macosx --show-sdk-path)
-SWIFTCFLAGS = -sdk $(SDKPATH) -I ../
+SWIFTCFLAGS = -sdk $(SDKPATH) -I ../ -Xlinker -L.. -Xlinker -lSwiftQt -Xlinker -rpath -Xlinker $(PWD)/..
 SWIFT_LIBS_PATH = /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib/swift/macosx
-LDFLAGS = -L$(SWIFT_LIBS_PATH) -Wl,-rpath,$(SWIFT_LIBS_PATH) -L../CSwiftQt -lCSwiftQt -Wl,-rpath,$(PWD)/../CSwiftQt
-OUTFILES = Example Example.o
+TARGET = Generator
 
-Example: Example.o
-	$(CXX) $(LDFLAGS) Example.o ../API.o ../CUtil.o -o Example
-
-Example.o: $(SRC)
-	$(SWIFTC) $(SWIFTCFLAGS) -emit-object $(OPTS) $(SRC)
+$(TARGET): $(SRC)
+	$(SWIFTC) $(SWIFTCFLAGS)  -module-name $(TARGET) $(SRC)
 
 .PHONY: clean
 
 clean:
-	rm -f $(OUTFILES)
+	rm -f $(TARGET)
