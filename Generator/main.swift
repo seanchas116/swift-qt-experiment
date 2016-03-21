@@ -22,9 +22,10 @@ enum Member {
   case method(Method)
 }
 
-class ParameterVisitor: Visitor {
+func visitParameters(root: CXCursor) -> [Variable] {
   var parameters = [Variable]()
-  override func visit(cursor: CXCursor, parent: CXCursor) -> CXChildVisitResult {
+
+  visitChildren(root) { cursor, parent in
     let kind = cursor.kind
     if kind == CXCursor_ParmDecl {
       let param = Variable(
@@ -36,18 +37,19 @@ class ParameterVisitor: Visitor {
     }
     return CXChildVisit_Recurse
   }
+
+  return parameters
 }
 
-class MemberVisitor: Visitor {
+func visitMembers(root: CXCursor) -> [Member] {
   var members = [Member]()
-  override func visit(cursor: CXCursor, parent: CXCursor) -> CXChildVisitResult {
+
+  visitChildren(root) { cursor, parent in
     let kind = cursor.kind
     if kind == CXCursor_CXXMethod {
-      let paramVisitor = ParameterVisitor()
-      paramVisitor.visitChildren(cursor)
       let method = Method(
         name: cursor.description,
-        parameters: paramVisitor.parameters,
+        parameters: visitParameters(cursor),
         returnType: cursor.type.resultType.description
       )
       print(method)
@@ -64,20 +66,20 @@ class MemberVisitor: Visitor {
     }
     return CXChildVisit_Recurse
   }
+
+  return members
 }
 
-class ClassVisitor: Visitor {
+func visitClasses(root: CXCursor) -> [Type] {
   var types = [Type]()
 
-  override func visit(cursor: CXCursor, parent: CXCursor) -> CXChildVisitResult {
+  visitChildren(root) { cursor, parent in
     let kind = cursor.kind
     if kind == CXCursor_ClassDecl {
-      let memberVisitor = MemberVisitor()
-      memberVisitor.visitChildren(cursor)
       let type = Type(
         name: cursor.description,
         namespace: "",
-        members: memberVisitor.members
+        members: visitMembers(cursor)
       )
       types.append(type)
       print(type)
@@ -85,13 +87,8 @@ class ClassVisitor: Visitor {
     }
     return CXChildVisit_Recurse
   }
-}
 
-class DumpVisitor: Visitor {
-  override func visit(cursor: CXCursor, parent: CXCursor) -> CXChildVisitResult {
-    print("\(cursor.kind): \(cursor)")
-    return CXChildVisit_Recurse
-  }
+  return types
 }
 
 let index = clang_createIndex(0, 1)
@@ -105,8 +102,15 @@ let translationUnit = clang_createTranslationUnitFromSourceFile(
 )
 let rootCursor = clang_getTranslationUnitCursor(translationUnit)
 
-DumpVisitor().visitChildren(rootCursor)
-ClassVisitor().visitChildren(rootCursor)
+func dumpAST() {
+  visitChildren(rootCursor) { cursor, parent in
+    print("\(cursor.kind): \(cursor)")
+    return CXChildVisit_Recurse
+  }
+}
+
+dumpAST()
+visitClasses(rootCursor)
 
 clang_disposeTranslationUnit(translationUnit)
 clang_disposeIndex(index)
