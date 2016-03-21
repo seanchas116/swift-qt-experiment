@@ -39,6 +39,10 @@ extension CXCursor: CustomStringConvertible {
   public var description: String {
     return ClangString(clang_getCursorSpelling(self)).description
   }
+
+  var accessSpecifier: CX_CXXAccessSpecifier {
+    return clang_getCXXAccessSpecifier(self)
+  }
 }
 
 extension CXCursorKind: CustomStringConvertible {

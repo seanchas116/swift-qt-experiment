@@ -46,6 +46,13 @@ func visitMembers(root: CXCursor) -> [Member] {
 
   visitChildren(root) { cursor, parent in
     let kind = cursor.kind
+    if kind != CXCursor_CXXMethod && kind != CXCursor_FieldDecl {
+      return CXChildVisit_Recurse
+    }
+    if cursor.accessSpecifier == CX_CXXPrivate {
+      return CXChildVisit_Continue
+    }
+
     if kind == CXCursor_CXXMethod {
       let method = Method(
         name: cursor.description,
@@ -54,7 +61,6 @@ func visitMembers(root: CXCursor) -> [Member] {
       )
       print(method)
       members.append(.method(method))
-      return CXChildVisit_Continue
     }
     if kind == CXCursor_FieldDecl {
       let variable = Variable(
@@ -64,7 +70,7 @@ func visitMembers(root: CXCursor) -> [Member] {
       print(variable)
       members.append(.variable(variable))
     }
-    return CXChildVisit_Recurse
+    return CXChildVisit_Continue
   }
 
   return members
