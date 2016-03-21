@@ -15,13 +15,13 @@ public:
   int foo() {
     return 0;
   }
-  QString bar(QString x, QString y) {
+  QString bar(const QString &x, const QString &y) {
     return x + y;
   }
   QString text() {
     return _text;
   }
-  void setText(QString text) {
+  void setText(const QString &text) {
     _text = text;
   }
 };
