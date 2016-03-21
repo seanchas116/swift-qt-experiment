@@ -19,6 +19,12 @@ extension CXType: CustomStringConvertible {
   public var description: String {
     return ClangString(clang_getTypeSpelling(self)).description
   }
+  var resultType: CXType {
+    return clang_getResultType(self)
+  }
+  var argumentTypes: [CXType] {
+    return (0 ..< clang_getNumArgTypes(self)).map { clang_getArgType(self, UInt32($0)) }
+  }
 }
 
 extension CXCursor: CustomStringConvertible {

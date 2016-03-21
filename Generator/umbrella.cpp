@@ -10,6 +10,8 @@ class Test: QObject {
   Q_PROPERTY(QString text READ text WRITE setText)
   QString _text;
 public:
+  int value;
+
   int foo() {
     return 0;
   }
