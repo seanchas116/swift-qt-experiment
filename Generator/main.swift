@@ -31,17 +31,17 @@ class DumpVisitor: Visitor {
 }
 
 let index = clang_createIndex(0, 1)
-let args = [String]()
+let args = CStringArray(["-std=c++11"])
 let translationUnit = clang_createTranslationUnitFromSourceFile(
   index,
   Process.arguments[1],
-  Int32(CStringArray(args).length),
-  CStringArray(args).constPointers,
+  Int32(args.length),
+  args.constPointers,
   0, nil
 )
 let rootCursor = clang_getTranslationUnitCursor(translationUnit)
 
-DumpVisitor().visitChildren(rootCursor)
+//DumpVisitor().visitChildren(rootCursor)
 ClassVisitor().visitChildren(rootCursor)
 
 clang_disposeTranslationUnit(translationUnit)
