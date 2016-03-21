@@ -25,7 +25,7 @@ class ClassVisitor: Visitor {
 
 class DumpVisitor: Visitor {
   override func visit(cursor: CXCursor, parent: CXCursor) -> CXChildVisitResult {
-    print(cursor.kind)
+    print("\(cursor.kind): \(cursor)")
     return CXChildVisit_Recurse
   }
 }
