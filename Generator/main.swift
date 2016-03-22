@@ -98,7 +98,7 @@ func visitClasses(root: CXCursor) -> [Type] {
 }
 
 let index = clang_createIndex(0, 1)
-let args = CStringArray(["-std=c++11"])
+let args = CStringArray(["-std=c++11", "-I/Users/seanchas116/Qt/5.6/clang_64/lib/QtCore.framework/Headers"])
 let translationUnit = clang_createTranslationUnitFromSourceFile(
   index,
   Process.arguments[1],
